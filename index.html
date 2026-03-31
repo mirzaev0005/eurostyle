@@ -8,67 +8,42 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #000; color: #fff; margin: 0; padding: 0; }
         header { width: 100%; background: linear-gradient(135deg, #d4af37, #f2d06b); color: #000; padding: 15px 0; text-align: center; font-size: 20px; font-weight: bold; position: sticky; top: 0; z-index: 100; }
-        .promo { background: #1a1a1a; padding: 10px; text-align: center; font-size: 13px; color: #d4af37; border-bottom: 1px solid #333; }
         .container { padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .card { background: #111; border: 1px solid #222; border-radius: 15px; overflow: hidden; display: flex; flex-direction: column; }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
-        .card-info { padding: 12px; text-align: center; }
-        .card h3 { font-size: 14px; margin: 5px 0; color: #fff; }
-        .price { font-size: 16px; color: #d4af37; font-weight: bold; display: block; margin-bottom: 10px; }
+        .card { background: #111; border: 1px solid #222; border-radius: 12px; overflow: hidden; text-align: center; }
+        .card img { width: 100%; height: 180px; object-fit: cover; }
+        .card-info { padding: 10px; }
+        .price { color: #d4af37; font-weight: bold; font-size: 16px; display: block; margin-bottom: 8px; }
         .btn { background: #d4af37; color: #000; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .btn:active { transform: scale(0.95); }
-        footer { padding: 20px; text-align: center; font-size: 12px; color: #555; }
     </style>
 </head>
 <body>
-    <header>EURO STYLE 👔</header>
-    <div class="promo">🌟 XS - 5XL gacha barcha o'lchamlar bor!</div>
-
+    <header>EURO STYLE</header>
     <div class="container">
         <div class="card">
-            <img src="923.jpg" alt="Demiks Polo">
+            <img src="923.jpg">
             <div class="card-info">
-                <h3>Demiks Polo (Bej)</h3>
+                <h3>Demiks Polo</h3>
                 <span class="price">120 000 so'm</span>
-                <button class="btn" onclick="order('Demiks Polo (Bej) - 120k')">Tanlash</button>
+                <button class="btn" onclick="sendOrder('Demiks Polo (923) - 120,000 sum')">Tanlash</button>
             </div>
         </div>
         <div class="card">
-            <img src="924.jpg" alt="Demiks Polo">
+            <img src="925.jpg">
             <div class="card-info">
-                <h3>Demiks Polo (Yashil)</h3>
+                <h3>Demiks Polo</h3>
                 <span class="price">120 000 so'm</span>
-                <button class="btn" onclick="order('Demiks Polo (Yashil) - 120k')">Tanlash</button>
-            </div>
-        </div>
-        <div class="card">
-            <img src="925.jpg" alt="Demiks Polo">
-            <div class="card-info">
-                <h3>Demiks Polo (Oq)</h3>
-                <span class="price">120 000 so'm</span>
-                <button class="btn" onclick="order('Demiks Polo (Oq) - 120k')">Tanlash</button>
-            </div>
-        </div>
-        <div class="card">
-            <img src="929.jpg" alt="Demiks Polo">
-            <div class="card-info">
-                <h3>Demiks Polo (Ko'k)</h3>
-                <span class="price">120 000 so'm</span>
-                <button class="btn" onclick="order('Demiks Polo (Ko\'k) - 120k')">Tanlash</button>
+                <button class="btn" onclick="sendOrder('Demiks Polo (925) - 120,000 sum')">Tanlash</button>
             </div>
         </div>
     </div>
-
-    <footer>
-        📍 Mumtoz bozori, 3-Blok, 126-do'kon<br>
-        Euro Style — Sifatli tanlov!
-    </footer>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        function order(item) {
+        function sendOrder(item) {
+            // BU FUNKSIYA MA'LUMOTNI BOTGA YUBORADI
             tg.sendData(item);
         }
     </script>
