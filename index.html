@@ -3,62 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Euro Style - Premium Store</title>
+    <title>Euro Style - Premium Men's Shop</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --dark: #0a0a0a; --card-bg: #161616; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--dark); color: #fff; margin: 0; padding-bottom: 80px; }
+        :root { --gold: #d4af37; --bg: #000; --card: #121212; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; margin: 0; padding-bottom: 50px; }
         
         header { 
-            background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
-            padding: 25px 0; text-align: center; border-bottom: 2px solid var(--gold);
+            background: linear-gradient(180deg, #1a1a1a, #000);
+            padding: 20px 0; text-align: center; border-bottom: 2px solid var(--gold);
             position: sticky; top: 0; z-index: 100;
         }
-        header h1 { margin: 0; font-size: 24px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; }
+        header h1 { margin: 0; font-size: 22px; letter-spacing: 4px; color: var(--gold); }
 
         .container { padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
-        .card { 
-            background: var(--card-bg); border-radius: 15px; overflow: hidden; 
-            border: 1px solid #222; transition: 0.3s; position: relative;
-        }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #222; display: flex; flex-direction: column; }
+        .card img { width: 100%; height: 180px; object-fit: cover; }
         
-        .badge {
-            position: absolute; top: 10px; right: 10px; background: var(--gold);
-            color: #000; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 5px;
+        .card-body { padding: 10px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-title { font-size: 13px; margin-bottom: 5px; color: #ccc; height: 32px; overflow: hidden; }
+        .card-price { color: var(--gold); font-weight: 700; font-size: 15px; margin-bottom: 10px; display: block; }
+
+        .size-grid { 
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 15px; 
         }
-
-        .card-body { padding: 12px; }
-        .card-title { font-size: 14px; font-weight: 500; margin-bottom: 5px; color: #eee; }
-        .card-price { color: var(--gold); font-weight: 700; font-size: 16px; display: block; margin-bottom: 12px; }
-
-        .size-box { display: flex; gap: 5px; margin-bottom: 12px; justify-content: center; }
         .size-btn { 
-            background: #222; border: 1px solid #444; color: #fff; 
-            padding: 5px 8px; border-radius: 5px; font-size: 11px; cursor: pointer;
+            background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 5px 0;
+            font-size: 10px; border-radius: 4px; cursor: pointer; transition: 0.2s;
         }
-        .size-btn.active { background: var(--gold); color: #000; border-color: var(--gold); }
+        .size-btn.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: bold; }
 
         .buy-btn { 
-            background: var(--gold); color: #000; border: none; 
-            width: 100%; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer;
+            background: var(--gold); color: #000; border: none; padding: 10px;
+            border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: auto;
         }
 
-        /* Phone Modal */
-        #phone-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        /* Modal Settings */
+        #modal {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
             background: rgba(0,0,0,0.9); z-index: 200; justify-content: center; align-items: center;
         }
-        .modal-content { 
-            background: #1a1a1a; padding: 25px; border-radius: 20px; 
-            width: 80%; text-align: center; border: 1px solid var(--gold);
+        .modal-box { background: #1a1a1a; padding: 25px; border-radius: 15px; width: 85%; text-align: center; border: 1px solid var(--gold); }
+        .modal-box input { 
+            width: 90%; padding: 12px; margin: 15px 0; background: #000; border: 1px solid var(--gold); 
+            color: #fff; border-radius: 8px; font-size: 18px; text-align: center;
         }
-        input { 
-            width: 90%; padding: 12px; margin: 15px 0; border-radius: 8px; 
-            border: 1px solid #444; background: #000; color: #fff; font-size: 18px;
-        }
-        .confirm-btn { background: var(--gold); color: #000; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; }
+        .order-confirm { background: var(--gold); color: #000; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -67,70 +59,77 @@
 
 <div class="container">
     <div class="card">
-        <div class="badge">PREMIUM</div>
         <img src="923.jpg">
         <div class="card-body">
             <div class="card-title">Demiks Polo (Bej)</div>
             <span class="card-price">120 000 so'm</span>
-            <div class="size-box" id="sizes-1">
-                <button class="size-btn" onclick="selectSize(this, 'M')">M</button>
-                <button class="size-btn" onclick="selectSize(this, 'L')">L</button>
-                <button class="size-btn active" onclick="selectSize(this, 'XL')">XL</button>
-                <button class="size-btn" onclick="selectSize(this, '2XL')">2XL</button>
+            <div class="size-grid" id="s1">
+                <button class="size-btn" onclick="select(this)">S</button>
+                <button class="size-btn" onclick="select(this)">M</button>
+                <button class="size-btn" onclick="select(this)">L</button>
+                <button class="size-btn active" onclick="select(this)">XL</button>
+                <button class="size-btn" onclick="select(this)">2XL</button>
+                <button class="size-btn" onclick="select(this)">3XL</button>
+                <button class="size-btn" onclick="select(this)">4XL</button>
+                <button class="size-btn" onclick="select(this)">5XL</button>
             </div>
-            <button class="buy-btn" onclick="openModal('Demiks Polo (Bej)', '120 000', 'sizes-1')">BUYURTMA</button>
+            <button class="buy-btn" onclick="openOrder('Demiks Polo (Bej)', '120 000', 's1')">SOTIB OLISH</button>
         </div>
     </div>
 
     <div class="card">
-        <div class="badge">NEW</div>
         <img src="925.jpg">
         <div class="card-body">
             <div class="card-title">Demiks Polo (Oq)</div>
             <span class="card-price">120 000 so'm</span>
-            <div class="size-box" id="sizes-2">
-                <button class="size-btn" onclick="selectSize(this, 'M')">M</button>
-                <button class="size-btn" onclick="selectSize(this, 'L')">L</button>
-                <button class="size-btn active" onclick="selectSize(this, 'XL')">XL</button>
-                <button class="size-btn" onclick="selectSize(this, '2XL')">2XL</button>
+            <div class="size-grid" id="s2">
+                <button class="size-btn" onclick="select(this)">S</button>
+                <button class="size-btn" onclick="select(this)">M</button>
+                <button class="size-btn" onclick="select(this)">L</button>
+                <button class="size-btn active" onclick="select(this)">XL</button>
+                <button class="size-btn" onclick="select(this)">2XL</button>
+                <button class="size-btn" onclick="select(this)">3XL</button>
+                <button class="size-btn" onclick="select(this)">4XL</button>
+                <button class="size-btn" onclick="select(this)">5XL</button>
             </div>
-            <button class="buy-btn" onclick="openModal('Demiks Polo (Oq)', '120 000', 'sizes-2')">BUYURTMA</button>
+            <button class="buy-btn" onclick="openOrder('Demiks Polo (Oq)', '120 000', 's2')">SOTIB OLISH</button>
         </div>
     </div>
 </div>
 
-<div id="phone-modal">
-    <div class="modal-content">
-        <h3>Telefon raqamingiz</h3>
-        <input type="tel" id="phone-input" placeholder="+998" value="+998">
-        <button class="confirm-btn" onclick="finalOrder()">TASDIQLASH</button>
+<div id="modal">
+    <div class="modal-box">
+        <h3 style="color:var(--gold)">Buyurtmani tasdiqlash</h3>
+        <p id="order-summary" style="font-size: 14px; color: #bbb;"></p>
+        <input type="tel" id="phone" value="+998" placeholder="+998xxxxxxx">
+        <button class="order-confirm" onclick="send()">TASDIQLASH</button>
+        <button onclick="document.getElementById('modal').style.display='none'" style="background:none; border:none; color:#777; margin-top:15px; cursor:pointer;">Bekor qilish</button>
     </div>
 </div>
 
 <script>
     let tg = window.Telegram.WebApp;
     tg.expand();
-    
-    let currentOrder = {};
+    let currentData = {};
 
-    function selectSize(btn, size) {
-        let parent = btn.parentElement;
-        parent.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    function select(btn) {
+        let btns = btn.parentElement.querySelectorAll('.size-btn');
+        btns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
     }
 
-    function openModal(name, price, sizeId) {
-        let selectedSize = document.querySelector(`#${sizeId} .active`).innerText;
-        currentOrder = { name, price, size: selectedSize };
-        document.getElementById('phone-modal').style.display = 'flex';
+    function openOrder(name, price, sid) {
+        let size = document.querySelector(`#${sid} .active`).innerText;
+        currentData = { name, price, size };
+        document.getElementById('order-summary').innerText = `${name} | O'lcham: ${size}`;
+        document.getElementById('modal').style.display = 'flex';
     }
 
-    function finalOrder() {
-        let phone = document.getElementById('phone-input').value;
-        if(phone.length < 9) { alert('Telefon raqamni kiriting'); return; }
-        
-        let message = `👕 ${currentOrder.name}\n📏 O'lcham: ${currentOrder.size}\n💰 Narx: ${currentOrder.price} so'm\n📞 Tel: ${phone}`;
-        tg.sendData(message);
+    function send() {
+        let p = document.getElementById('phone').value;
+        if(p.length < 9) { alert('Raqamni kiriting'); return; }
+        let msg = `🛒 BUYURTMA:\n👕 ${currentData.name}\n📏 O'lcham: ${currentData.size}\n💰 Narx: ${currentData.price} so'm\n📞 Tel: ${p}`;
+        tg.sendData(msg);
     }
 </script>
 </body>
