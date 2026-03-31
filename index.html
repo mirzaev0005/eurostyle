@@ -1,142 +1,29 @@
-<!DOCTYPE html>
-<html lang="uz">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Euro Style - Premium Shop</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --gold: #d4af37; --bg: #000; --card: #141414; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; margin: 0; padding-bottom: 20px; -webkit-user-select: none; }
-        
-        header { 
-            background: linear-gradient(180deg, #1a1a1a, #000);
-            padding: 20px 0; text-align: center; border-bottom: 2px solid var(--gold);
-            position: sticky; top: 0; z-index: 100;
-        }
-        header h1 { margin: 0; font-size: 22px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; }
+// Sayt yuklanganda mahsulotlarni bazadan olish
+window.onload = async function() {
+    // mirzaev0005 o'rniga o'z loginigizni qo'ying
+    const response = await fetch('https://mirzaev0005.pythonanywhere.com/get_products');
+    const products = await response.json();
+    const container = document.querySelector('.container');
+    
+    container.innerHTML = ''; // Tozalash
 
-        .container { padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-
-        .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #222; display: flex; flex-direction: column; }
-        /* Rasm xatolarini oldini olish uchun stil */
-        .card img { width: 100%; height: 180px; object-fit: cover; background: #222; display: block; }
-        
-        .card-body { padding: 12px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; }
-        .card-title { font-size: 13px; margin-bottom: 8px; color: #ccc; height: 32px; overflow: hidden; line-height: 1.2; }
-        .card-price { color: var(--gold); font-weight: 700; font-size: 16px; margin-bottom: 12px; display: block; }
-
-        .size-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 15px; }
-        .size-btn { 
-            background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 6px 0;
-            font-size: 10px; border-radius: 4px; cursor: pointer; transition: 0.2s;
-        }
-        .size-btn.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: bold; }
-
-        .buy-btn { 
-            background: var(--gold); color: #000; border: none; padding: 12px;
-            border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: auto;
-            text-transform: uppercase; font-size: 12px;
-        }
-
-        /* Modal */
-        #modal {
-            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.95); z-index: 200; justify-content: center; align-items: center;
-        }
-        .modal-box { background: #1a1a1a; padding: 30px; border-radius: 20px; width: 85%; text-align: center; border: 1px solid var(--gold); }
-        .modal-box input { 
-            width: 90%; padding: 15px; margin: 20px 0; background: #000; border: 1px solid var(--gold); 
-            color: #fff; border-radius: 10px; font-size: 20px; text-align: center; outline: none;
-        }
-        .order-confirm { background: var(--gold); color: #000; border: none; padding: 15px 40px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; }
-    </style>
-</head>
-<body>
-
-<header><h1>EURO STYLE</h1></header>
-
-<div class="container">
-    <div class="card">
-        <img src="923.jpg" onerror="this.src='https://via.placeholder.com/200x200?text=Euro+Style'">
-        <div class="card-body">
-            <div class="card-title">Demiks Polo (Bej)</div>
-            <span class="card-price">120 000 so'm</span>
-            <div class="size-grid" id="s923">
-                <button class="size-btn" onclick="select(this)">S</button>
-                <button class="size-btn" onclick="select(this)">M</button>
-                <button class="size-btn" onclick="select(this)">L</button>
-                <button class="size-btn active" onclick="select(this)">XL</button>
-                <button class="size-btn" onclick="select(this)">2XL</button>
-                <button class="size-btn" onclick="select(this)">3XL</button>
-                <button class="size-btn" onclick="select(this)">4XL</button>
-                <button class="size-btn" onclick="select(this)">5XL</button>
-            </div>
-            <button class="buy-btn" onclick="openOrder('Demiks Polo (Bej)', '120 000', 's923')">BUYURTMA BERISH</button>
-        </div>
-    </div>
-
-    <div class="card">
-        <img src="925.jpg" onerror="this.src='https://via.placeholder.com/200x200?text=Euro+Style'">
-        <div class="card-body">
-            <div class="card-title">Demiks Polo (Oq)</div>
-            <span class="card-price">120 000 so'm</span>
-            <div class="size-grid" id="s925">
-                <button class="size-btn" onclick="select(this)">S</button>
-                <button class="size-btn" onclick="select(this)">M</button>
-                <button class="size-btn" onclick="select(this)">L</button>
-                <button class="size-btn active" onclick="select(this)">XL</button>
-                <button class="size-btn" onclick="select(this)">2XL</button>
-                <button class="size-btn" onclick="select(this)">3XL</button>
-                <button class="size-btn" onclick="select(this)">4XL</button>
-                <button class="size-btn" onclick="select(this)">5XL</button>
-            </div>
-            <button class="buy-btn" onclick="openOrder('Demiks Polo (Oq)', '120 000', 's925')">BUYURTMA BERISH</button>
-        </div>
-    </div>
-
-    </div>
-
-<div id="modal">
-    <div class="modal-box">
-        <h3 style="color:var(--gold); margin-top: 0;">Tasdiqlash</h3>
-        <p id="order-summary" style="font-size: 14px; color: #bbb; margin-bottom: 10px;"></p>
-        <input type="tel" id="phone" value="+998" maxlength="13">
-        <button class="order-confirm" onclick="send()">BUYURTMANI YUBORISH</button>
-        <p onclick="document.getElementById('modal').style.display='none'" style="color:#777; margin-top:20px; font-size: 12px; cursor:pointer;">BEKOR QILISH</p>
-    </div>
-</div>
-
-<script>
-    let tg = window.Telegram.WebApp;
-    tg.expand();
-    let currentData = {};
-
-    // O'lcham tanlash funksiyasi
-    function select(btn) {
-        let btns = btn.parentElement.querySelectorAll('.size-btn');
-        btns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    }
-
-    // Modalni ochish
-    function openOrder(name, price, sid) {
-        let size = document.querySelector(`#${sid} .active`).innerText;
-        currentData = { name, price, size };
-        document.getElementById('order-summary').innerText = `${name} | O'lcham: ${size}`;
-        document.getElementById('modal').style.display = 'flex';
-    }
-
-    // Ma'lumotni Botga yuborish
-    function send() {
-        let p = document.getElementById('phone').value;
-        if(p.length < 9) { alert('Telefon raqamingizni to\'liq kiriting!'); return; }
-        
-        let msg = `🛍 **YANGI BUYURTMA**\n━━━━━━━━━━━━━━\n👕 Mahsulot: ${currentData.name}\n📏 O'lcham: ${currentData.size}\n💰 Narx: ${currentData.price} so'm\n📞 Tel: ${p}`;
-        tg.sendData(msg);
-        tg.close(); // Ma'lumot yuborilgach yopish
-    }
-</script>
-</body>
-</html>
+    products.forEach((p, index) => {
+        const id = `s${index}`;
+        container.innerHTML += `
+            <div class="card">
+                <img src="${p.image}" onerror="this.src='923.jpg'">
+                <div class="card-body">
+                    <div class="card-title">${p.name}</div>
+                    <span class="card-price">${p.price} so'm</span>
+                    <div class="size-grid" id="${id}">
+                        <button class="size-btn" onclick="select(this)">S</button>
+                        <button class="size-btn" onclick="select(this)">M</button>
+                        <button class="size-btn" onclick="select(this)">L</button>
+                        <button class="size-btn active" onclick="select(this)">XL</button>
+                        <button class="size-btn" onclick="select(this)">2XL</button>
+                    </div>
+                    <button class="buy-btn" onclick="openOrder('${p.name}', '${p.price}', '${id}')">BUYURTMA</button>
+                </div>
+            </div>`;
+    });
+};
