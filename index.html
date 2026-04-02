@@ -1,29 +1,56 @@
-<script>
-    async function loadProducts() {
-        const list = document.getElementById('product-list');
-        try {
-            const res = await fetch(`http://localhost:8080/api/products`);
-            const products = await res.json();
-            list.innerHTML = "";
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Euro Style</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f9; padding: 10px; }
+        .product-card { background: #fff; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .product-card img { width: 100%; border-radius: 10px; height: 200px; object-fit: cover; }
+        .size-badge { display: inline-block; background: #eee; padding: 3px 8px; margin: 2px; border-radius: 5px; font-size: 12px; font-weight: bold; }
+        .price { color: #007aff; font-size: 18px; font-weight: bold; margin: 10px 0; }
+        .btn { width: 100%; background: #007aff; color: #fff; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center;">👔 Euro Style Katalog</h2>
+    <div id="product-list"></div>
 
-            products.forEach(p => {
-                // O'lchamlarni chiroyli qilib chiqarish
-                const sizes = p.sizes ? p.sizes.split(',') : [];
-                let sizesHtml = sizes.map(s => `<span style="display:inline-block; border:1px solid #ddd; padding:2px 8px; margin:2px; border-radius:4px; font-size:12px; background:#f9f9f9;">${s.trim()}</span>`).join('');
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
 
-                list.innerHTML += `
-                    <div class="product-card" style="background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:15px; padding:10px;">
-                        <img src="${p.img}" style="width:100%; border-radius:8px;">
-                        <div style="padding:10px 0;">
-                            <h3 style="font-size:16px;">${p.name}</h3>
-                            <div style="margin:8px 0;">${sizesHtml}</div>
-                            <p style="color:#007aff; font-weight:bold;">${p.price} so'm</p>
-                            <button onclick="tg.sendData('Buyurtma: ${p.name}')" style="width:100%; background:#007aff; color:#fff; border:none; padding:10px; border-radius:8px; margin-top:10px;">Sotib olish</button>
+        // SERVER_URL ni o'zingizning server/kompyuter manzilingizga almashtiring
+        const SERVER_URL = "http://localhost:8080"; 
+
+        async function loadProducts() {
+            const list = document.getElementById('product-list');
+            try {
+                const res = await fetch(`${SERVER_URL}/api/products`);
+                const products = await res.json();
+                list.innerHTML = "";
+
+                products.forEach(p => {
+                    const sizes = p.sizes ? p.sizes.split(',') : [];
+                    let sizesHtml = sizes.map(s => `<span class="size-badge">${s.trim()}</span>`).join('');
+
+                    list.innerHTML += `
+                        <div class="product-card">
+                            <img src="${p.img}" onerror="this.src='https://via.placeholder.com/200'">
+                            <h3>${p.name}</h3>
+                            <div style="margin: 10px 0;">${sizesHtml}</div>
+                            <p class="price">${p.price} so'm</p>
+                            <button class="btn" onclick="tg.sendData('Buyurtma: ${p.name}')">Sotib olish</button>
                         </div>
-                    </div>
-                `;
-            });
-        } catch (e) { console.error(e); }
-    }
-    window.onload = loadProducts;
-</script>
+                    `;
+                });
+            } catch (e) {
+                list.innerHTML = "<p style='text-align:center; color:red;'>⚠️ Serverga ulanib bo'lmadi.</p>";
+            }
+        }
+        window.onload = loadProducts;
+    </script>
+</body>
+</html>
