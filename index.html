@@ -7,42 +7,44 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body { font-family: sans-serif; background: #f0f2f5; padding: 10px; margin: 0; }
-        .product-card { background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .product-card img { width: 100%; border-radius: 8px; height: 180px; object-fit: cover; }
-        .size-tag { display: inline-block; background: #e7efff; color: #007aff; padding: 2px 8px; margin: 2px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-        .price { color: #007aff; font-size: 16px; font-weight: bold; margin: 8px 0; }
-        .buy-btn { width: 100%; background: #007aff; color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: bold; }
+        .card { background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .card img { width: 100%; border-radius: 8px; height: 200px; object-fit: cover; }
+        .tag { display: inline-block; background: #e7efff; color: #007aff; padding: 2px 8px; margin: 2px; border-radius: 4px; font-size: 11px; }
+        .price { color: #007aff; font-size: 18px; font-weight: bold; margin: 10px 0; }
+        .btn { width: 100%; background: #007aff; color: #fff; border: none; padding: 12px; border-radius: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h2 style="text-align:center; font-size: 18px;">👔 Euro Style Katalog</h2>
+    <h2 style="text-align:center;">👔 Euro Style Katalog</h2>
     <div id="list"></div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
 
+        // DIQQAT: SHU YERGA NGROK LINKINI QO'YING
+        const SERVER_URL = "https://SIZNING-NGROK-LINKINGIZ.ngrok-free.app"; 
+
         async function load() {
             const container = document.getElementById('list');
             try {
-                // LOCALHOST o'rniga o'z IP manzilingizni qo'ying (masalan: http://192.168.1.5:8080)
-                const res = await fetch('http://localhost:8080/api/products');
+                const res = await fetch(`${SERVER_URL}/api/products`);
                 const products = await res.json();
                 container.innerHTML = "";
 
                 products.forEach(p => {
-                    const sizes = p.sizes ? p.sizes.split(',').map(s => `<span class="size-tag">${s.trim()}</span>`).join('') : '';
+                    const sizes = p.sizes ? p.sizes.split(',').map(s => `<span class="tag">${s.trim()}</span>`).join('') : '';
                     container.innerHTML += `
-                        <div class="product-card">
+                        <div class="card">
                             <img src="${p.img}">
-                            <h3 style="font-size:15px; margin:8px 0;">${p.name}</h3>
+                            <h3>${p.name}</h3>
                             <div>${sizes}</div>
                             <p class="price">${p.price} so'm</p>
-                            <button class="buy-btn" onclick="tg.sendData('${p.name} - ${p.price}')">Sotib olish</button>
+                            <button class="btn" onclick="tg.sendData('${p.name} (${p.price})')">Sotib olish</button>
                         </div>
                     `;
                 });
-            } catch (e) { container.innerHTML = "⚠️ Serverga ulanishda xato!"; }
+            } catch (e) { container.innerHTML = "<p style='color:red; text-align:center;'>⚠️ Serverga ulanib bo'lmadi.</p>"; }
         }
         window.onload = load;
     </script>
