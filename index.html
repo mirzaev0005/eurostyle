@@ -7,24 +7,65 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; color: #333; padding-bottom: 50px; }
-        header { background-color: #ffffff; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        h2 { font-size: 24px; color: #1a1a1a; }
-        
-        #product-list { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
-        
-        .product-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; transition: transform 0.2s; }
-        .product-card:active { transform: scale(0.98); }
-        .product-card img { width: 100%; height: 180px; object-fit: cover; background-color: #eee; }
-        
-        .product-info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-info h3 { font-size: 16px; margin-bottom: 5px; color: #2c3e50; }
-        .product-info .price { font-weight: bold; color: #0088cc; font-size: 15px; margin-bottom: 10px; }
-        
-        .btn-buy { background-color: #0088cc; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; }
-        
-        .loader { text-align: center; padding: 50px; font-style: italic; color: #888; }
-        .no-products { text-align: center; padding: 50px; color: #666; grid-column: span 2; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #f4f7f9; 
+            color: #222; 
+            padding-bottom: 30px;
+        }
+        header { 
+            background: #ffffff; 
+            padding: 15px; 
+            text-align: center; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000;
+        }
+        h2 { font-size: 20px; color: #1c1c1c; letter-spacing: 0.5px; }
+
+        #product-list { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+            padding: 12px; 
+        }
+
+        .product-card { 
+            background: #fff; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+        .product-card img { 
+            width: 100%; 
+            height: 160px; 
+            object-fit: cover; 
+            background-color: #f9f9f9;
+        }
+
+        .product-info { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; }
+        .product-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: #333; height: 34px; overflow: hidden; }
+        .product-price { font-size: 15px; font-weight: 700; color: #007aff; margin-bottom: 10px; }
+
+        .btn-buy { 
+            background-color: #007aff; 
+            color: white; 
+            border: none; 
+            padding: 10px; 
+            border-radius: 8px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-buy:active { background-color: #005bb5; transform: scale(0.96); }
+
+        .status-msg { text-align: center; padding: 40px 20px; color: #777; font-size: 14px; grid-column: span 2; }
+        .error-msg { color: #d9534f; font-weight: 500; }
     </style>
 </head>
 <body>
@@ -34,57 +75,65 @@
 </header>
 
 <div id="product-list">
-    <div class="loader">Mahsulotlar yuklanmoqda...</div>
+    <div class="status-msg">Yuklanmoqda...</div>
 </div>
 
 <script>
     let tg = window.Telegram.WebApp;
     tg.expand();
+    tg.MainButton.hide();
 
-    // SERVER_URL - bu sizning botingiz ishlayotgan serverning manzili
-    // Localda tekshirish uchun: http://localhost:8080/api/products
-    const SERVER_URL = "https://SIZNING-SERVER-MANZILINGIZ.com"; 
+    // MUHIM: SERVER_URL ni o'zingizning kompyuter IP manzilingizga almashtiring
+    // Agar kompyuterda sinayotgan bo'lsangiz: http://localhost:8080
+    // Agar telefonda sinayotgan bo'lsangiz, kompyuteringizning Wi-Fi IP manzilini yozing
+    const SERVER_URL = "http://localhost:8080"; 
 
-    async function fetchProducts() {
+    async function loadProducts() {
+        const listContainer = document.getElementById('product-list');
         try {
             const response = await fetch(`${SERVER_URL}/api/products`);
-            const products = await response.json();
+            if (!response.ok) throw new Error("Serverdan ma'lumot olib bo'lmadi");
             
-            const list = document.getElementById('product-list');
-            list.innerHTML = ""; // Loader-ni tozalash
+            const products = await response.json();
+            listContainer.innerHTML = ""; // Tozalash
 
             if (products.length === 0) {
-                list.innerHTML = "<div class='no-products'>Hozircha mahsulotlar yo'q.</div>";
+                listContainer.innerHTML = "<div class='status-msg'>Hozircha mahsulotlar qo'shilmagan.</div>";
                 return;
             }
 
             products.forEach(p => {
-                list.innerHTML += `
-                    <div class="product-card">
-                        <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/200x200?text=Rasm+yoq'">
-                        <div class="product-info">
-                            <div>
-                                <h3>${p.name}</h3>
-                                <p class="price">${p.price} so'm</p>
-                            </div>
-                            <button class="btn-buy" onclick="sendOrder('${p.name}', '${p.price}')">Sotib olish</button>
-                        </div>
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/200?text=Rasm+yoq'">
+                    <div class="product-info">
+                        <div class="product-name">${p.name}</div>
+                        <div class="product-price">${p.price} so'm</div>
+                        <button class="btn-buy" onclick="buyProduct('${p.name}', '${p.price}')">Sotib olish</button>
                     </div>
                 `;
+                listContainer.appendChild(card);
             });
         } catch (error) {
-            document.getElementById('product-list').innerHTML = "<div class='no-products'>⚠️ Xatolik: Serverga ulanib bo'lmadi.</div>";
-            console.error("Xatolik:", error);
+            console.error(error);
+            listContainer.innerHTML = `
+                <div class="status-msg error-msg">
+                    ⚠️ Xatolik: Serverga ulanib bo'lmadi.<br>
+                    <small>Server ishlayotganiga va IP manzili to'g'riligiga ishonch hosil qiling.</small>
+                </div>`;
         }
     }
 
-    function sendOrder(name, price) {
-        tg.sendData(`Buyurtma: ${name} (${price} so'm)`);
+    function buyProduct(name, price) {
+        // Telegramga buyurtma ma'lumotini yuborish
+        const orderData = `Mahsulot: ${name}, Narxi: ${price}`;
+        tg.sendData(orderData);
         tg.close();
     }
 
-    // Sahifa yuklanganda mahsulotlarni tortib olish
-    window.onload = fetchProducts;
+    // Sahifa yuklanganda mahsulotlarni chaqirish
+    window.onload = loadProducts;
 </script>
 
 </body>
