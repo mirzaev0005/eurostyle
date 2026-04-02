@@ -3,106 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Euro Style - Men's Shop</title>
+    <title>Euro Style Katalog</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-        header {
-            background-color: #1a1a1a;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .container {
-            padding: 15px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        .product-card {
-            background: white;
-            border-radius: 12px;
-            padding: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .product-card img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        .product-title {
-            font-size: 14px;
-            margin: 10px 0 5px;
-            font-weight: 600;
-        }
-        .product-price {
-            color: #27ae60;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .buy-btn {
-            background-color: #1a1a1a;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            width: 100%;
-            cursor: pointer;
-        }
-        .buy-btn:active {
-            transform: scale(0.95);
-        }
+        body { font-family: sans-serif; background-color: #f4f4f4; text-align: center; padding: 20px; }
+        .product-card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .product-card img { width: 100%; border-radius: 10px; max-height: 200px; object-fit: cover; }
+        .btn { background: #0088cc; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
+    <h2>🛍 Euro Style Katalog</h2>
+    <div id="product-list"></div>
 
-<header>Euro Style</header>
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
 
-<div class="container" id="product-list">
-    </div>
+        const products = [
+            { id: 1, name: "Mahalliy Klassik Ko'ylak", price: "180,000", img: "https://your-image-link.com/koylak1.jpg" },
+            { id: 2, name: "Chet el Premium Futbolka", price: "150,000", img: "https://your-image-link.com/futbolka1.jpg" },
+            { id: 3, name: "Erkaklar Kamari (Charm)", price: "95,000", img: "https://your-image-link.com/kamar.jpg" }
+        ];
 
-<script>
-    let tg = window.Telegram.WebApp;
-    tg.expand(); // Appni to'liq ekranga yoyish
+        const list = document.getElementById('product-list');
+        products.forEach(p => {
+            list.innerHTML += `
+                <div class="product-card">
+                    <img src="${p.img}" alt="${p.name}">
+                    <h3>${p.name}</h3>
+                    <p>Narxi: ${p.price} so'm</p>
+                    <button class="btn" onclick="order('${p.name}')">Sotib olish</button>
+                </div>
+            `;
+        });
 
-    // Namuna mahsulotlar
-    const products = [
-        { id: 1, name: "Klassik Kostyum", price: "1,200,000", img: "https://images.unsplash.com/photo-1594932224828-b4b059b6f68e?w=400" },
-        { id: 2, name: "Polo Ko'ylak", price: "250,000", img: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=400" },
-        { id: 3, name: "Oq Ko'ylak (Slim Fit)", price: "300,000", img: "https://images.unsplash.com/photo-1598033129183-c4f50c717658?w=400" },
-        { id: 4, name: "Fudbolka", price: "225,000", img: "https://images.unsplash.com/photo-1624371414361-e6709482451e?w=400" }
-    ];
-
-    const productList = document.getElementById('product-list');
-
-    products.forEach(product => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
-            <img src="${product.img}" alt="${product.name}">
-            <div class="product-title">${product.name}</div>
-            <div class="product-price">${product.price} so'm</div>
-            <button class="buy-btn" onclick="orderProduct('${product.name}')">Sotib olish</button>
-        `;
-        productList.appendChild(card);
-    });
-
-    function orderProduct(name) {
-        tg.sendData("Buyurtma: " + name); // Telegram botga ma'lumot yuborish
-        tg.close(); // Appni yopish
-    }
-</script>
+        function order(name) {
+            tg.sendData("Buyurtma: " + name);
+            tg.close();
+        }
+    </script>
 </body>
 </html>
