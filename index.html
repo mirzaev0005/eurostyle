@@ -6,27 +6,27 @@
     <title>Euro Style</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; padding: 15px; margin: 0; }
-        .card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .card img { width: 100%; border-radius: 10px; height: 200px; object-fit: cover; }
-        .size { display: inline-block; background: #eee; padding: 5px 10px; margin: 5px 2px; border-radius: 5px; font-size: 12px; }
-        .price { color: #007bff; font-weight: bold; font-size: 18px; margin: 10px 0; }
-        .btn { width: 100%; background: #007bff; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; }
+        body { font-family: sans-serif; background: #f0f2f5; padding: 10px; margin: 0; }
+        .product-card { background: #fff; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .product-card img { width: 100%; border-radius: 10px; height: 200px; object-fit: cover; }
+        .size-tag { display: inline-block; background: #eef2ff; color: #4f46e5; padding: 4px 10px; margin: 3px; border-radius: 6px; font-size: 12px; font-weight: bold; }
+        .price { color: #2563eb; font-size: 20px; font-weight: bold; margin: 10px 0; }
+        .buy-btn { width: 100%; background: #2563eb; color: #fff; border: none; padding: 12px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
     <h2 style="text-align:center;">👔 Euro Style Katalog</h2>
-    <div id="catalog"></div>
+    <div id="product-list"></div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
 
         // NGROK LINKINGIZNI SHU YERGA QO'YING
-        const SERVER_URL = "https://undepicted-rosina-deferential.ngrok-free.app";
+        const SERVER_URL = "https://undepicted-rosina-deferential.ngrok-free.app"; 
 
-        async function load() {
-            const list = document.getElementById('catalog');
+        async function loadProducts() {
+            const list = document.getElementById('product-list');
             try {
                 const res = await fetch(`${SERVER_URL}/api/products`, {
                     headers: { "ngrok-skip-browser-warning": "true" }
@@ -34,22 +34,28 @@
                 const products = await res.json();
                 list.innerHTML = "";
 
+                if (products.length === 0) {
+                    list.innerHTML = "<p style='text-align:center;'>Hozircha mahsulot yo'q.</p>";
+                    return;
+                }
+
                 products.forEach(p => {
-                    const sizesHtml = p.sizes.split(',').map(s => `<span class="size">${s.trim()}</span>`).join('');
+                    const sizes = p.sizes ? p.sizes.split(',').map(s => `<span class="size-tag">${s.trim()}</span>`).join('') : '';
                     list.innerHTML += `
-                        <div class="card">
+                        <div class="product-card">
                             <img src="${p.img}">
                             <h3>${p.name}</h3>
-                            <div>${sizesHtml}</div>
+                            <div>${sizes}</div>
                             <p class="price">${p.price} so'm</p>
-                            <button class="btn" onclick="tg.sendData('${p.name} - ${p.price}')">Buyurtma berish</button>
-                        </div>`;
+                            <button class="buy-btn" onclick="tg.sendData('${p.name} - ${p.price}')">Sotib olish</button>
+                        </div>
+                    `;
                 });
             } catch (e) {
-                list.innerHTML = "<p style='color:red; text-align:center;'>⚠️ Katalog yuklanmadi. Server yoki Ngrok o'chgan bo'lishi mumkin.</p>";
+                list.innerHTML = "<p style='text-align:center; color:red;'>⚠️ Katalog yuklanmadi. Ngrok linkini GitHub-da yangilang!</p>";
             }
         }
-        load();
+        window.onload = loadProducts;
     </script>
 </body>
 </html>
