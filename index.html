@@ -6,12 +6,12 @@
     <title>Euro Style</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; padding: 10px; margin: 0; }
-        .product-card { background: #fff; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .product-card img { width: 100%; border-radius: 10px; height: 200px; object-fit: cover; }
-        .size-tag { display: inline-block; background: #eef2ff; color: #4f46e5; padding: 4px 10px; margin: 3px; border-radius: 6px; font-size: 12px; font-weight: bold; }
-        .price { color: #2563eb; font-size: 20px; font-weight: bold; margin: 10px 0; }
-        .buy-btn { width: 100%; background: #2563eb; color: #fff; border: none; padding: 12px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        body { font-family: sans-serif; background: #f8f9fa; padding: 15px; margin: 0; }
+        .product-card { background: #fff; border-radius: 15px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .product-card img { width: 100%; border-radius: 10px; height: 220px; object-fit: cover; }
+        .size-tag { display: inline-block; background: #e9ecef; padding: 5px 10px; margin: 3px; border-radius: 5px; font-size: 12px; font-weight: bold; }
+        .price { color: #007bff; font-size: 20px; font-weight: bold; margin: 10px 0; }
+        .btn { width: 100%; background: #007bff; color: #fff; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -22,8 +22,8 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // NGROK LINKINGIZNI SHU YERGA QO'YING
-        const SERVER_URL = "https://undepicted-rosina-deferential.ngrok-free.app"; 
+        // SIZNING NGROK LINKINGIZ (Rasmga asosan)
+        const SERVER_URL = "https://undepicted-rosina-deferential.ngrok-free.dev"; 
 
         async function loadProducts() {
             const list = document.getElementById('product-list');
@@ -35,7 +35,7 @@
                 list.innerHTML = "";
 
                 if (products.length === 0) {
-                    list.innerHTML = "<p style='text-align:center;'>Hozircha mahsulot yo'q.</p>";
+                    list.innerHTML = "<p style='text-align:center;'>Hozircha mahsulot yo'q. Admin paneldan qo'shing.</p>";
                     return;
                 }
 
@@ -47,12 +47,11 @@
                             <h3>${p.name}</h3>
                             <div>${sizes}</div>
                             <p class="price">${p.price} so'm</p>
-                            <button class="buy-btn" onclick="tg.sendData('${p.name} - ${p.price}')">Sotib olish</button>
-                        </div>
-                    `;
+                            <button class="btn" onclick="tg.sendData('${p.name} - ${p.price}')">Sotib olish</button>
+                        </div>`;
                 });
             } catch (e) {
-                list.innerHTML = "<p style='text-align:center; color:red;'>⚠️ Katalog yuklanmadi. Ngrok linkini GitHub-da yangilang!</p>";
+                list.innerHTML = "<p style='text-align:center; color:red;'>⚠️ Serverga ulanib bo'lmadi.</p>";
             }
         }
         window.onload = loadProducts;
